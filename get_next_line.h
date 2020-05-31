@@ -17,6 +17,15 @@
 # include <unistd.h>
 # include <stdlib.h>
 
-int		get_next_line(int fd, char **line);
+typedef struct	s_list
+{
+	void			*content;
+	struct s_list	*next;
+}				t_list;
+
+int				get_next_line(int fd, char **line);
+t_list			*ft_lstnew(void *content);
+void			ft_lstadd_back(t_list **lst, t_list *new);
+char			*ft_strchr(const char *s, int c)
 
 #endif
