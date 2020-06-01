@@ -6,7 +6,7 @@
 /*   By: ametapod <pe4enko111@rambler.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 11:43:45 by ametapod          #+#    #+#             */
-/*   Updated: 2020/06/01 22:35:47 by student          ###   ########.fr       */
+/*   Updated: 2020/06/02 00:31:52 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,35 +34,38 @@ static int	check_remainder(t_list *lst, int fd)
 
 static int	remalloc_list(char *ptr, t_list **lst, int fd)
 {
-	int		len;
+	int		i;
 	t_list	*last;
 	char	*line;
 
-	if (*ptr == 0 || !(check_remainder(lst, fd)))
+	if (*ptr == 0 || !(check_remainder(*lst, fd)))
+	{
 		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
 			return (0);
+	}
 	else
 	{
 		last = ft_lstlast(*lst, fd);
-		len = (ft_strchr(last->content, '\0') - last->content) +\
-			(ft_strchr(ptr, '\0') - ptr);
-		if (!(line = (char *)malloc(sizeof(char) * (len + 1))))
+		if (!(line = (char *)malloc(sizeof(char) *\
+			((ft_strchr(last->content, '\0') - (char *)last->content) +\
+				(ft_strchr(ptr, '\0') - ptr) + 1))))
 			return (0);
-		while (last->(*content))
-			*line++ = last->(*content++);
+		i = 0;
+		while (*((char *)last->content))
+			line[i++] = *((char *)last->content++);
 		while (*ptr)
-			*line++ = *ptr++;
-		*line = 0;
-		free (last->content);
+			line[i++] = *ptr++;
+		line[i] = 0;
+		free(last->content);
 		last->content = line;
-		free (ptr);
+		//free(ptr);
 	}
 	return (1);
 }
 
 static int	add_list(char *buf, t_list **lst, int fd)
 {
-	int 	len;
+	int		len;
 	int		i;
 	char	*ptr;
 
@@ -89,19 +92,27 @@ static int	add_list(char *buf, t_list **lst, int fd)
 static int	submit_line(t_list **lst, int fd, char **line)
 {
 	t_list	*tmp;
+	t_list	*bgn;
+	t_list	*list;
 
-	while (*lst)
+	bgn = 0;
+	list = *lst;
+	while (list)
 	{
-		if ((*lst)->fd == fd)
+		if (list->fd == fd)
 		{
-			*line = (*lst)->content;
-			tmp = (*lst)->next;
-			(*lst)->next = NULL;
-			free(*lst);
-			*lst = tmp;
+			*line = list->content;
+			tmp = list->next;
+			list->next = NULL;
+			free(list);
+			if (bgn)
+				bgn->next = tmp;
+			else
+				*lst = tmp;
 			return (1);
 		}
-		*lst = (*lst)->next;
+		bgn = list;
+		list = list->next;
 	}
 	return (0);
 }
@@ -112,7 +123,6 @@ int			get_next_line(int fd, char **line)
 	char			buf[BUFFER_SIZE + 1];
 	int				rt;
 
-	lst = 0;
 	while (check_remainder(lst, fd) < 2)
 	{
 		if ((rt = read(fd, buf, BUFFER_SIZE)) < 1)
