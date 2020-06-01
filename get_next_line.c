@@ -12,6 +12,26 @@
 
 #include "get_next_line.h"
 
+static int	check_remainder(t_list *lst, int fd)
+{
+	while (lst)
+	{
+		if (lst->fd == fd)
+		{
+			lst = lst->next;
+			while (lst)
+			{
+				if (lst->fd == fd)
+					return (2);
+				lst = lst->next;
+			}
+			return (1);
+		}
+		lst = lst->next;
+	}
+	return (0);
+}
+
 static int	remalloc_list(char *ptr, t_list **lst, int fd)
 {
 	int		len;
@@ -64,26 +84,6 @@ static int	add_list(char *buf, t_list **lst, int fd)
 			return (0);
 	}
 	return (1);
-}
-
-static int	check_remainder(t_list *lst, int fd)
-{
-	while (lst)
-	{
-		if (lst->fd == fd)
-		{
-			lst = lst->next;
-			while (lst)
-			{
-				if (lst->fd == fd)
-					return (2);
-				lst = lst->next;
-			}
-			return (1);
-		}
-		lst = lst->next;
-	}
-	return (0);
 }
 
 static int	submit_line(t_list **lst, int fd, char **line)
