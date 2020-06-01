@@ -58,3 +58,17 @@ char	*ft_strchr(const char *s, int c)
 		return ((char *)s);
 	return (NULL);
 }
+
+t_list	*ft_lstlast(t_list *lst, int fd)
+{
+	t_list *ptr;
+
+	ptr = 0;
+	while (lst)
+	{
+		if (lst->fd == fd)
+			ptr = lst;
+		lst = lst->next;
+	}
+	return (ptr);
+}
