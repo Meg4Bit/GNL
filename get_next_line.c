@@ -6,20 +6,20 @@
 /*   By: ametapod <pe4enko111@rambler.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 11:43:45 by ametapod          #+#    #+#             */
-/*   Updated: 2020/06/01 01:25:21 by student          ###   ########.fr       */
+/*   Updated: 2020/06/01 22:35:47 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int	remalloc_list(char **ptr, t_list **lst, int fd)
+static int	remalloc_list(char *ptr, t_list **lst, int fd)
 {
 	int		len;
 	t_list	*last;
 	char	*line;
 
-	if (**ptr == 0 || !check_remainder(lst, fd))
-		if (!ft_lstadd_back(lst, ft_lstnew(*ptr, fd)))
+	if (*ptr == 0 || !(check_remainder(lst, fd)))
+		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
 			return (0);
 	else
 	{
@@ -30,8 +30,8 @@ static int	remalloc_list(char **ptr, t_list **lst, int fd)
 			return (0);
 		while (last->(*content))
 			*line++ = last->(*content++);
-		while (**ptr)
-			*line++ = **ptr++;
+		while (*ptr)
+			*line++ = *ptr++;
 		*line = 0;
 		free (last->content);
 		last->content = line;
@@ -60,7 +60,7 @@ static int	add_list(char *buf, t_list **lst, int fd)
 		while (i < len)
 			ptr[i++] = *buf++;
 		ptr[i] = 0;
-		if (!remalloc_list(&ptr, lst, fd))
+		if (!remalloc_list(ptr, lst, fd))
 			return (0);
 	}
 	return (1);
