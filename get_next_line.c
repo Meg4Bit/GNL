@@ -6,11 +6,12 @@
 /*   By: ametapod <pe4enko111@rambler.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 11:43:45 by ametapod          #+#    #+#             */
-/*   Updated: 2020/06/02 13:00:14 by student          ###   ########.fr       */
+/*   Updated: 2020/06/02 19:14:50 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 static int	check_remainder(t_list *lst, int fd)
 {
@@ -29,7 +30,6 @@ static int	check_remainder(t_list *lst, int fd)
 
 static int	remalloc_list(char *ptr, t_list **lst, int fd)
 {
-	int		i;
 	t_list	*last;
 	char	*line;
 
@@ -37,8 +37,9 @@ static int	remalloc_list(char *ptr, t_list **lst, int fd)
 	{
 		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
 			return (0);
+		return (1);
 	}
-	if (ft_strchr(last->content, '\n')
+	if (ft_strchr(last->content, '\n'))
 	{
 		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
 			return (0);
@@ -94,8 +95,9 @@ static int	submit_line(t_list **lst, int fd, char **line)
 			if (ft_strchr(*line, '\n'))
 				(*line)[ft_strchr(*line, '\n') - *line] = 0;
 			tmp = list->next;
+			list->next = 0;
 			free(list);
-			bgn ? bgn->next = tmp : *lst = tmp;
+			bgn ? (bgn->next = tmp) : (*lst = tmp);
 			return (1);
 		}
 		bgn = list;
@@ -108,14 +110,14 @@ int			get_next_line(int fd, char **line)
 {
 	static	t_list	*lst;
 	char			buf[BUFFER_SIZE + 1];
-	int				rt;
+	static	int		rt;
 
 	while (check_remainder(lst, fd) < 2)
 	{
 		if ((rt = read(fd, buf, BUFFER_SIZE)) < 1)
 		{
 			if (check_remainder(lst, fd) == 1)
-				return (submit_line(&lst, fd, line));
+				submit_line(&lst, fd, line);
 			return (rt);
 		}
 		buf[rt] = 0;
