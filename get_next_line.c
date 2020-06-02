@@ -6,7 +6,7 @@
 /*   By: ametapod <pe4enko111@rambler.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 11:43:45 by ametapod          #+#    #+#             */
-/*   Updated: 2020/06/02 00:31:52 by student          ###   ########.fr       */
+/*   Updated: 2020/06/02 13:00:14 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	remalloc_list(char *ptr, t_list **lst, int fd)
 		while (*ptr)
 			line[i++] = *ptr++;
 		line[i] = 0;
-		free(last->content);
+		//free(last->content);
 		last->content = line;
 		//free(ptr);
 	}
@@ -116,7 +116,7 @@ static int	submit_line(t_list **lst, int fd, char **line)
 	}
 	return (0);
 }
-
+#include <stdio.h>
 int			get_next_line(int fd, char **line)
 {
 	static	t_list	*lst;
@@ -127,8 +127,9 @@ int			get_next_line(int fd, char **line)
 	{
 		if ((rt = read(fd, buf, BUFFER_SIZE)) < 1)
 		{
-			if (check_remainder(lst, fd) == 1)
+			if (check_remainder(lst, fd) == 1 && *((char *)ft_lstlast(lst, fd)->content))
 				return (submit_line(&lst, fd, line));
+			**line = 0;
 			return (rt);
 		}
 		buf[rt] = 0;
@@ -138,5 +139,6 @@ int			get_next_line(int fd, char **line)
 			return (-1);
 		}
 	}
+	printf("%c!", *((char *)ft_lstlast(lst, fd)->content));
 	return (submit_line(&lst, fd, line));
 }
