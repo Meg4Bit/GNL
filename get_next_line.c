@@ -119,7 +119,8 @@ int			get_next_line(int fd, char **line)
 			if (check_remainder(lst, fd) == 1)
 				submit_line(&lst, fd, line);
 			else
-				*line = ft_strjoin("\0", "\0");
+				if(!(*line = ft_strjoin("\0", "\0")))
+					return (-1);
 			return (rt);
 		}
 		buf[rt] = 0;
