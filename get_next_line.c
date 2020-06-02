@@ -19,8 +19,13 @@ static int	check_remainder(t_list *lst, int fd)
 	{
 		if (lst->fd == fd)
 		{
-			if (ft_strchr(lst->content, '\n'))
-				return (2);
+			lst = lst->next;
+			while (lst)
+			{
+				if (lst->fd == fd)
+					return (2);
+				lst = lst->next;
+			}
 			return (1);
 		}
 		lst = lst->next;
@@ -33,19 +38,14 @@ static int	remalloc_list(char *ptr, t_list **lst, int fd)
 	t_list	*last;
 	char	*line;
 
-	if (!(last = ft_lstlast(*lst, fd)))
-	{
-		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
-			return (0);
-		return (1);
-	}
-	if (ft_strchr(last->content, '\n'))
+	if (*ptr == 0 || !(check_remainder(*lst, fd)))
 	{
 		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
 			return (0);
 	}
 	else
 	{
+		last = ft_lstlast(*lst, fd);
 		if (!(line = ft_strjoin(last->content, ptr)))
 			return (0);
 		free(last->content);
@@ -64,9 +64,11 @@ static int	add_list(char *buf, t_list **lst, int fd)
 	while (*buf)
 	{
 		if (ft_strchr(buf, '\n'))
-			len = ft_strchr(buf, '\n') - buf + 1;
+			len = ft_strchr(buf, '\n') - buf;
 		else
 			len = ft_strchr(buf, '\0') - buf;
+		if (*buf == '\n')
+			buf++;
 		if (!(ptr = (char *)malloc(sizeof(char) * (len + 1))))
 			return (0);
 		i = 0;
@@ -92,8 +94,6 @@ static int	submit_line(t_list **lst, int fd, char **line)
 		if (list->fd == fd)
 		{
 			*line = list->content;
-			if (ft_strchr(*line, '\n'))
-				(*line)[ft_strchr(*line, '\n') - *line] = 0;
 			tmp = list->next;
 			list->next = 0;
 			free(list);
