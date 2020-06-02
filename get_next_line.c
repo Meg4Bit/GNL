@@ -6,7 +6,7 @@
 /*   By: ametapod <pe4enko111@rambler.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 11:43:45 by ametapod          #+#    #+#             */
-/*   Updated: 2020/06/02 19:14:50 by student          ###   ########.fr       */
+/*   Updated: 2020/06/02 22:20:36 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ static int	submit_line(t_list **lst, int fd, char **line)
 			tmp = list->next;
 			list->next = 0;
 			free(list);
-			bgn ? (bgn->next = tmp) : (*lst = tmp);
+			bgn ? (bgn->next = tmp) :\
+						(*lst = tmp);
 			return (1);
 		}
 		bgn = list;
@@ -118,18 +119,12 @@ int			get_next_line(int fd, char **line)
 			if (check_remainder(lst, fd) == 1)
 				submit_line(&lst, fd, line);
 			else
-			{
-				*line = (char *)malloc(sizeof(char) * 1);
-				**line = 0;
-			}
+				*line = ft_strjoin("\0", "\0");
 			return (rt);
 		}
 		buf[rt] = 0;
 		if (!add_list(buf, &lst, fd))
-		{
-			//del;
 			return (-1);
-		}
 	}
 	return (submit_line(&lst, fd, line));
 }
