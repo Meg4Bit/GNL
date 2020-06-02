@@ -18,13 +18,8 @@ static int	check_remainder(t_list *lst, int fd)
 	{
 		if (lst->fd == fd)
 		{
-			lst = lst->next;
-			while (lst)
-			{
-				if (lst->fd == fd)
-					return (2);
-				lst = lst->next;
-			}
+			if (ft_strchr(lst->content, '\n'))
+				return (2);
 			return (1);
 		}
 		lst = lst->next;
@@ -38,27 +33,23 @@ static int	remalloc_list(char *ptr, t_list **lst, int fd)
 	t_list	*last;
 	char	*line;
 
-	if (*ptr == 0 || !(check_remainder(*lst, fd)))
+	if (!(last = ft_lstlast(*lst, fd)))
+	{
+		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
+			return (0);
+	}
+	if (ft_strchr(last->content, '\n')
 	{
 		if (!ft_lstadd_back(lst, ft_lstnew(ptr, fd)))
 			return (0);
 	}
 	else
 	{
-		last = ft_lstlast(*lst, fd);
-		if (!(line = (char *)malloc(sizeof(char) *\
-			((ft_strchr(last->content, '\0') - (char *)last->content) +\
-				(ft_strchr(ptr, '\0') - ptr) + 1))))
+		if (!(line = ft_strjoin(last->content, ptr)))
 			return (0);
-		i = 0;
-		while (*((char *)last->content))
-			line[i++] = *((char *)last->content++);
-		while (*ptr)
-			line[i++] = *ptr++;
-		line[i] = 0;
-		//free(last->content);
+		free(last->content);
 		last->content = line;
-		//free(ptr);
+		free(ptr);
 	}
 	return (1);
 }
@@ -72,11 +63,9 @@ static int	add_list(char *buf, t_list **lst, int fd)
 	while (*buf)
 	{
 		if (ft_strchr(buf, '\n'))
-			len = ft_strchr(buf, '\n') - buf;
+			len = ft_strchr(buf, '\n') - buf + 1;
 		else
 			len = ft_strchr(buf, '\0') - buf;
-		if (*buf == '\n')
-			buf++;
 		if (!(ptr = (char *)malloc(sizeof(char) * (len + 1))))
 			return (0);
 		i = 0;
@@ -102,13 +91,11 @@ static int	submit_line(t_list **lst, int fd, char **line)
 		if (list->fd == fd)
 		{
 			*line = list->content;
+			if (ft_strchr(*line, '\n'))
+				(*line)[ft_strchr(*line, '\n') - *line] = 0;
 			tmp = list->next;
-			list->next = NULL;
 			free(list);
-			if (bgn)
-				bgn->next = tmp;
-			else
-				*lst = tmp;
+			bgn ? bgn->next = tmp : *lst = tmp;
 			return (1);
 		}
 		bgn = list;
@@ -116,7 +103,7 @@ static int	submit_line(t_list **lst, int fd, char **line)
 	}
 	return (0);
 }
-#include <stdio.h>
+
 int			get_next_line(int fd, char **line)
 {
 	static	t_list	*lst;
@@ -127,9 +114,8 @@ int			get_next_line(int fd, char **line)
 	{
 		if ((rt = read(fd, buf, BUFFER_SIZE)) < 1)
 		{
-			if (check_remainder(lst, fd) == 1 && *((char *)ft_lstlast(lst, fd)->content))
+			if (check_remainder(lst, fd) == 1)
 				return (submit_line(&lst, fd, line));
-			**line = 0;
 			return (rt);
 		}
 		buf[rt] = 0;
@@ -139,6 +125,5 @@ int			get_next_line(int fd, char **line)
 			return (-1);
 		}
 	}
-	printf("%c!", *((char *)ft_lstlast(lst, fd)->content));
 	return (submit_line(&lst, fd, line));
 }

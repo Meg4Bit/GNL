@@ -72,3 +72,25 @@ t_list	*ft_lstlast(t_list *lst, int fd)
 	}
 	return (ptr);
 }
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*str;
+	int		i;
+
+	if (!s1)
+		return (0);
+	str = (char *)malloc(sizeof(char) * ((ft_strchr(s1, '\0') - s1) +\
+			(ft_strchr(s2, '\0') - s2) + 1));
+	if (str)
+	{
+		i = 0;
+		while (*s1)
+			str[i++] = *s1++;
+		while (*s2)
+			str[i++] = *s2++;
+		str[i] = 0;
+		return (str);
+	}
+	return (0);
+}

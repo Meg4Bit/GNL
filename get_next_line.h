@@ -29,5 +29,6 @@ t_list			*ft_lstnew(void *content, int fd);
 void			*ft_lstadd_back(t_list **lst, t_list *new);
 char			*ft_strchr(const char *s, int c);
 t_list			*ft_lstlast(t_list *lst, int fd);
+char			*ft_strjoin(char const *s1, char const *s2);
 
 #endif
