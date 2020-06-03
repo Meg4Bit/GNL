@@ -6,7 +6,7 @@
 /*   By: ametapod <pe4enko111@rambler.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 11:43:45 by ametapod          #+#    #+#             */
-/*   Updated: 2020/06/03 23:59:00 by student          ###   ########.fr       */
+/*   Updated: 2020/06/04 00:14:11 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,9 @@ static int	submit_line(t_list *lst, int fd, char **line)
 		if (lst->fd == fd)
 		{
 			free(*line);
+			len = ft_strchr(lst->content, '\0') - (char *)lst->content;
 			if (ft_strchr(lst->content, '\n'))
 				len = ft_strchr(lst->content, '\n') - (char *)lst->content;
-			else
-				len = ft_strchr(lst->content, '\0') - (char *)lst->content;
 			if (!(*line = ft_substr(lst->content, 0, len)))
 				return (0);
 			if (!(tmp = ft_substr(lst->content, len + 1,\
