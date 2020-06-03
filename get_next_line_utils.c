@@ -59,26 +59,12 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-t_list	*ft_lstlast(t_list *lst, int fd)
-{
-	t_list *ptr;
-
-	ptr = 0;
-	while (lst)
-	{
-		if (lst->fd == fd)
-			ptr = lst;
-		lst = lst->next;
-	}
-	return (ptr);
-}
-
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*str;
 	int		i;
 
-	if (!s1)
+	if (!s1 || !s2)
 		return (0);
 	str = (char *)malloc(sizeof(char) * ((ft_strchr(s1, '\0') - s1) +\
 			(ft_strchr(s2, '\0') - s2) + 1));
@@ -91,6 +77,31 @@ char	*ft_strjoin(char const *s1, char const *s2)
 			str[i++] = *s2++;
 		str[i] = 0;
 		return (str);
+	}
+	return (0);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	int		strleng;
+	char	*sub;
+
+	if (!s)
+		return (0);
+	strleng = (ft_strchr(s, '\0') - s);
+	if (start >= strleng)
+		len = 0;
+	else
+		if (len > strleng - start)
+			len = strleng - start;
+	sub = (char *)malloc(sizeof(char) * (len + 1));
+	if (sub)
+	{
+		strleng = 0;
+		while (len-- && s[start])
+			sub[strleng++] = s[start++];
+		sub[strleng] = 0;
+		return (sub);
 	}
 	return (0);
 }
