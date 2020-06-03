@@ -6,7 +6,7 @@
 /*   By: ametapod <pe4enko111@rambler.ru>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 11:53:18 by ametapod          #+#    #+#             */
-/*   Updated: 2020/06/02 22:09:49 by student          ###   ########.fr       */
+/*   Updated: 2020/06/03 23:40:08 by student          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	int		strleng;
+	size_t	strleng;
 	char	*sub;
 
 	if (!s)
@@ -92,8 +92,10 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	if (start >= strleng)
 		len = 0;
 	else
+	{
 		if (len > strleng - start)
 			len = strleng - start;
+	}
 	sub = (char *)malloc(sizeof(char) * (len + 1));
 	if (sub)
 	{
