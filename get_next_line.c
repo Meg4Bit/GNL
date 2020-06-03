@@ -88,6 +88,9 @@ static int	submit_line(t_list *lst, int fd, char **line)
 	size_t	len;
 	char	*tmp;
 
+	if (!(*line = (char *)malloc(sizeof(char) * 1)))
+		return (-1);
+	**line = 0;
 	while (lst)
 	{
 		if (lst->fd == fd)
@@ -116,15 +119,13 @@ int			get_next_line(int fd, char **line)
 	char			buf[BUFFER_SIZE + 1];
 	int				rt;
 
-	if (!(*line = (char *)malloc(sizeof(char) * 1)))
-		return (-1);
-	**line = 0;
 	while (check_remainder(lst, fd) < 2)
 	{
 		if ((rt = read(fd, buf, BUFFER_SIZE)) < 1)
 		{
-			if (!submit_line(lst, fd, line))
-				return (del_list(&lst, fd, *line));
+			if (!rt)
+				if (!submit_line(lst, fd, line))
+					return (del_list(&lst, fd, *line));
 			del_list(&lst, fd, NULL);
 			return (rt);
 		}
